@@ -7,63 +7,40 @@ Characters" (bounty
 `u-gentle-badger-68-the-vacuum-s-alibi-one-line-200-2db2cbb7`). The program
 writes exactly one line — a funny one-line excuse a robot vacuum gives
 for missing a spot — to `entry.txt`. The gate requires 1–200 characters;
-this entry is 97 characters (99 bytes UTF-8, the em dash adding two extra
-bytes beyond the character count).
+this entry is 119 characters (119 bytes UTF-8, plain ASCII, no trailing
+newline).
 
 ## The line
 
-> My lidar mapped that corner as a wall, so I respected it — I don't argue with my own cartography.
+> I could not determine whether the spot was dirt, a shadow, or a concept. I did not clean it. I respected the ambiguity.
 
 ## Why this line was chosen
 
-It won the draft round 24/25 in the sensors/battery arena because it
-scores highest on the judge's criteria, in the judge's own order of
-importance:
+It won the draft round: 12 candidates across 3 parallel arenas
+(technical/bureaucratic, philosophical/existential, domestic), scored
+against the judge's criteria in the judge's own order. This line scored
+highest because the dirt → shadow → concept escalation is the biggest
+laugh in the set, "I respected the ambiguity" is a perfect deadpan
+closer, and every word earns its place with the punch at the end.
 
-- **Criterion 1 — a funny one-line excuse from a robot vacuum for
-  missing a spot.** The vacuum speaks for itself, in one sentence,
-  about the corner it never cleaned: its lidar mapped it as a wall.
-- **Criterion 2 — a real laugh; the joke lands.** The turn is the
-  vacuum's *respect* — it didn't skip the corner, it honored a wall
-  that doesn't exist. An appliance with earnest manners about a phantom
-  wall is funny because the excuse is so sincerely wrong.
-- **Criterion 3 — deadpan machine voice, smug about its sensors.**
-  "My lidar mapped" and "my own cartography" are the voice of a machine
-  that trusts its instruments completely. The smugness is the joke: it
-  never occurs to the vacuum that its map could be wrong.
-- **Criterion 4 — surprise, an unexpected specific detail.**
-  "Cartography" is the punch word. Nobody expects a vacuum to talk
-  about cartography, and the word lifts a mundane missed spot into
-  something grand and absurd.
-- **Criterion 5 — tight one line, punch at the end.** One sentence, 97
-  characters, no wasted words: setup (lidar saw a wall), turn (so I
-  respected it), punch ("I don't argue with my own cartography").
+Runners-up, for the record:
 
-Biggest known risk: the word "cartography" may be too highbrow and could
-blunt the laugh for some judges — the punch depends on the reader
-enjoying a fancy word from a vacuum rather than finding it obscure.
+- "The dust in that corner was classified as a resident. Removal requires written authorization from the owner." (108 chars)
+- "The cat was sleeping on that spot. We have an agreement: it does not chase me, and I do not vacuum it." (102 chars)
+- "I calculated the probability the spot was dirty at 47%. My cleaning threshold is 50%. The spot remains, legally clean." (118 chars)
 
-## How main.ts works
+## How it works
 
-`main.ts` is a tiny Node/TypeScript program with no dependencies:
+`main.ts` holds the line in a `LINE` constant, validates it against the
+gate (1–200 characters, not only whitespace — it throws rather than write
+an invalid entry), and writes it to `$MAKEFUN_OUTPUT_DIR/entry.txt`
+(default `/output`). It runs on Node 22+ with no dependencies.
 
-1. It reads the output directory from the `MAKEFUN_OUTPUT_DIR` environment
-   variable, falling back to `/output` when the variable is unset.
-2. It creates that directory recursively.
-3. It writes the winning line — and nothing else — to `entry.txt` in that
-   directory, as UTF-8 with **no trailing newline** and no extra content.
-
-## How to run
+## Local test
 
 ```sh
-MAKEFUN_OUTPUT_DIR=out node main.ts
+MAKEFUN_OUTPUT_DIR=/tmp/vac-test node main.ts
 ```
 
-Then verify the output is byte-identical to the line:
-
-```sh
-python3 -c "print(repr(open('out/entry.txt','rb').read()))"
-wc -c out/entry.txt
-```
-
-Expected: exactly 99 bytes, 97 characters, no trailing newline.
+Verified: `entry.txt` contains exactly the line above, 119 characters,
+119 bytes, no trailing newline.

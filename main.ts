@@ -1,20 +1,26 @@
 // The Vacuum's Alibi: One Line, 200 Characters — make.fun bounty entry.
 //
-// This tiny program writes a single one-line excuse from a robot vacuum
-// for missing a spot to entry.txt inside the output directory the harness
-// provides. It does nothing else: no network, no extra files, no extra
-// output.
+// A tiny program that writes one line — the excuse a robot vacuum gives
+// for missing a spot — to entry.txt inside the output directory the
+// harness provides. No network, no extra files, no extra output.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-// The winning line, exactly as chosen. Keep it byte-for-byte identical:
-// 97 characters (99 bytes UTF-8), no trailing newline, no extra content.
-const LINE =
-  "My lidar mapped that corner as a wall, so I respected it — I don't argue with my own cartography.";
+// The bounty gate: entry.txt must hold 1 to 200 characters of UTF-8 text.
+const MAX_CHARS = 200;
+const OUTPUT_FILE = "entry.txt";
 
-// The harness sets MAKEFUN_OUTPUT_DIR; fall back to /output when it is absent.
+// The line, exactly as chosen: 119 characters, no trailing newline.
+const LINE =
+  "I could not determine whether the spot was dirt, a shadow, or a concept. I did not clean it. I respected the ambiguity.";
+
 const outputDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 
+// Fail loudly rather than submit an entry the gate would refuse.
+if (LINE.length < 1 || LINE.length > MAX_CHARS || LINE.trim().length === 0) {
+  throw new Error(`entry line is ${LINE.length} characters; gate needs 1-${MAX_CHARS}`);
+}
+
 mkdirSync(outputDir, { recursive: true });
-writeFileSync(join(outputDir, "entry.txt"), LINE, "utf8");
+writeFileSync(join(outputDir, OUTPUT_FILE), LINE, "utf8");
